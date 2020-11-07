@@ -72,29 +72,6 @@ function App() {
   const [covers, setCovers] = useState([]);
   const [covTokens, setCovTokens] = useState([]);
 
-  const fetchSupply = async () => {
-    for (let i = 0; i < covers.length; i++) {
-      let token = {
-        name: covers[i][0]._name,
-      };
-      let claimToken = new ethers.Contract(
-        covers[i][0]._claimCovToken,
-        abiCovToken,
-        provider
-      );
-      let noclaimToken = new ethers.Contract(
-        covers[i][0]._noclaimCovToken,
-        abiCovToken,
-        provider
-      );
-      let claimTotalSupply = await claimToken.totalSupply();
-      let noclaimTotalSupply = await noclaimToken.totalSupply();
-      token.claimSupply = ethers.utils.formatUnits(claimTotalSupply);
-      token.noclaimSupply = ethers.utils.formatUnits(noclaimTotalSupply);
-      setCovTokens((p) => [...p, token]);
-    }
-  };
-
   useEffect(() => {
     protocolFactory.getAllProtocolAddresses().then((r) => {
       r.forEach((protocol) => {
@@ -124,8 +101,30 @@ function App() {
     });
   }, [protocolsInfo, provider]);
   useEffect(() => {
+    const fetchSupply = async () => {
+      for (let i = 0; i < covers.length; i++) {
+        let token = {
+          name: covers[i][0]._name,
+        };
+        let claimToken = new ethers.Contract(
+          covers[i][0]._claimCovToken,
+          abiCovToken,
+          provider
+        );
+        let noclaimToken = new ethers.Contract(
+          covers[i][0]._noclaimCovToken,
+          abiCovToken,
+          provider
+        );
+        let claimTotalSupply = await claimToken.totalSupply();
+        let noclaimTotalSupply = await noclaimToken.totalSupply();
+        token.claimSupply = ethers.utils.formatUnits(claimTotalSupply);
+        token.noclaimSupply = ethers.utils.formatUnits(noclaimTotalSupply);
+        setCovTokens((p) => [...p, token]);
+      }
+    };
     fetchSupply();
-  });
+  }, [covers, provider]);
   return (
     <div className="App">
       <h1>Cover Tracker</h1>
