@@ -138,7 +138,9 @@ function App() {
               <h4>Name: </h4>
               <p>{cover[0]._name}</p>
               <h4>Expiration date:</h4>
-              <p>{cover[0]._expirationTimestamp}</p>
+              <p>
+                {new Date(cover[0]._expirationTimestamp * 1000).toUTCString()}
+              </p>
               <Supply
                 name={covTokens[i]?.name}
                 claimSupply={covTokens[i]?.claimSupply}
